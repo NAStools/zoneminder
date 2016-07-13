@@ -1,0 +1,4 @@
+apps/nastools-zoneminder/log
+apps/nastools-zoneminder/sql
+apps/nastools-zoneminder/www/events
+apps/nastools-zoneminder/www/images

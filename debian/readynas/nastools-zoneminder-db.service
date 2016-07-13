@@ -1,0 +1,13 @@
+[Unit]
+Description=MySQL for nastools-zoneminder
+BindsTo=fvapp-nastools-zoneminder.service
+
+[Service]
+User=mysql
+Group=mysql
+ExecStart=/usr/sbin/mysqld --defaults-file=/apps/nastools-zoneminder/etc/my.cnf
+ExecStartPost=/apps/nastools-zoneminder/bin/mysql-wait-ready $MAINPID
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,15 @@
+[Unit]
+Description=ZoneMinder CCTV recording and security system
+After=network.target nastools-zoneminder-db.service apache2.service
+Requires=nastools-zoneminder-db.service apache2.service
+
+[Service]
+User=admin
+Type=forking
+ExecStart=/apps/nastools-zoneminder/bin/zmpkg.pl start
+ExecReload=/apps/nastools-zoneminder/bin/zmpkg.pl restart
+ExecStop=/apps/nastools-zoneminder/bin/zmpkg.pl stop
+PIDFile=/var/run/zm/zm.pid
+
+[Install]
+WantedBy=multi-user.target

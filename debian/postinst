@@ -1,0 +1,57 @@
+#! /bin/bash
+
+set -e
+
+test $DEBIAN_SCRIPT_DEBUG && set -v -x
+
+zm_config=/apps/nastools-zoneminder/etc/zm.conf
+sql_config=/apps/nastools-zoneminder/etc/my.cnf
+
+if [ "$1" = "configure" ]; then
+	if [ -z "$2" ]; then
+		systemctl --system daemon-reload
+		chown admin:admin -R /apps/nastools-zoneminder
+		chattr +C /apps/nastools-zoneminder/sql
+		mysql_install_db --defaults-file=$sql_config
+		mysqld --defaults-file=$sql_config --user=root &
+		/apps/nastools-zoneminder/bin/mysql-wait-ready $!
+		cat /apps/nastools-zoneminder/share/zoneminder/db/zm_create.sql | mysql --defaults-file=$sql_config
+		echo 'grant lock tables, alter,select,insert,update,delete on `nastools-zoneminder`.* to 'zmuser'@localhost identified by "zmpass";' | mysql --defaults-file=$sql_config mysql
+		echo 'update Config set Value = "flat" where name = "ZM_CSS_DEFAULT";
+		update Config set Value = "/apps/nastools-zoneminder/cgi-bin/nph-zms" where name = "ZM_PATH_ZMS";
+		update Config set Value = "/apps/nastools-zoneminder/log" where name = "ZM_PATH_LOGS";
+		update Config set Value = "ZoneMinder" where name = "ZM_WEB_TITLE_PREFIX";
+		update Config set Value = 0 where name = "ZM_CHECK_FOR_UPDATES";
+		update Config set Value = 0 where name = "ZM_TELEMETRY_DATA";
+		update Config set Value = "/usr/sbin/arp" where name = "ZM_PATH_ARP";
+		update Config set Value = "/apps/nastools-zoneminder/log/nastools-zoneminder_debug.log+" where name = "ZM_LOG_DEBUG_FILE";' \
+		| mysql --defaults-file=$sql_config nastools-zoneminder
+		mysqladmin --defaults-file=$sql_config shutdown
+		chown -R mysql:mysql /apps/nastools-zoneminder/sql
+		# ZoneMinder needs PHP's date.timezone set, might as well do this globally.
+		if ! grep ^date\.timezone /etc/php5/apache2/php.ini >/dev/null 2>&1; then
+			if [ -f /etc/timezone ]; then
+				CURTZ=$(cat /etc/timezone)
+			elif [ -h /etc/localtime]; then
+				CURTZ=$(readlink /etc/localtime | sed "s/\/usr\/share\/zoneinfo\///")
+			else
+				checksum=$(md5sum /etc/localtime | cut -d' ' -f1)
+				CURTZ=$(find /usr/share/zoneinfo/ -type f -exec md5sum {} \; | grep "^$checksum" | sed "s/.*\/usr\/share\/zoneinfo\///" | head -n 1)
+			fi
+			echo "date.timezone = $CURTZ" >> /etc/php5/apache2/php.ini
+		fi
+	fi
+	if [ -n "$2" ]; then
+		if systemctl status fvapp-nastools-zoneminder >/dev/null 2>&1; then
+			systemctl stop fvapp-nastools-zoneminder
+			systemctl stop nastools-zoneminder-db
+		fi
+		mysqld --defaults-file=$sql_config --user=root &
+		/apps/nastools-zoneminder/bin/mysql-wait-ready $!
+		/apps/nastools-zoneminder/bin/zmupdate.pl --nointeractive
+		/apps/nastools-zoneminder/bin/zmupdate.pl --nointeractive -f
+		mysqladmin --defaults-file=$sql_config shutdown
+	fi
+fi
+
+#DEBHELPER#

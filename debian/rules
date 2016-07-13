@@ -1,0 +1,47 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+export CFLAGS = -g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -pipe
+export CXXFLAGS = -g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -pipe
+INSTDIR = debian/tmp
+
+override_dh_auto_configure:
+	dh_auto_configure -- \
+		-DCMAKE_INSTALL_PREFIX=/apps/nastools-zoneminder \
+		-DCMAKE_SKIP_RPATH=ON \
+		-DCMAKE_VERBOSE_MAKEFILE=OFF \
+		-DCMAKE_COLOR_MAKEFILE=ON \
+		-DZM_RUNDIR=/var/run/zm \
+		-DZM_SOCKDIR=/var/run/zm \
+		-DZM_TMPDIR=/var/run/zmtmp \
+		-DZM_LOGDIR=/apps/nastools-zoneminder/log \
+		-DZM_WEBDIR=/apps/nastools-zoneminder/www \
+		-DZM_CGIDIR=/apps/nastools-zoneminder/cgi-bin \
+		-DZM_WEB_USER=admin \
+		-DZM_WEB_GROUP=admin \
+		-DZM_DB_HOST=localhost:/var/run/mysqld/nastools-zoneminder-db.sock \
+		-DZM_DB_NAME=nastools-zoneminder \
+		-DZM_PERL_SEARCH_PATH=/apps/nastools-zoneminder/share/perl5 \
+		-DCMAKE_INSTALL_SYSCONFDIR=apps/nastools-zoneminder/etc
+
+override_dh_auto_install:
+	dh_auto_install --buildsystem=cmake
+	rm $(INSTDIR)/apps/nastools-zoneminder/www/api/lib/Cake/LICENSE.txt
+	rm $(INSTDIR)/apps/nastools-zoneminder/www/api/.gitignore
+	rm $(INSTDIR)/apps/nastools-zoneminder/www/api/app/Plugin/Crud/LICENSE.txt
+	rm $(INSTDIR)/apps/nastools-zoneminder/www/api/app/vendor/composer/installers/.gitignore
+	rm $(INSTDIR)/apps/nastools-zoneminder/www/api/app/vendor/composer/installers/LICENSE
+	rm -r $(INSTDIR)/apps/nastools-zoneminder/www/api/lib/Cake/Test
+
+override_dh_auto_test:
+	# do not run tests...
+
+override_dh_strip:
+	dh_strip --dbg-package=nastools-zoneminder-dbg
+
+dh_install_debconf:
+
+%:
+	dh $@ --buildsystem=cmake --parallel

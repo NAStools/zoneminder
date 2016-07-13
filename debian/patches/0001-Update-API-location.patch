@@ -1,0 +1,43 @@
+From: NAStools <dev@nas.tools>
+Date: Thu, 14 Apr 2016 01:31:17 -0700
+Subject: Update API location
+
+---
+ web/api/.htaccess             | 2 +-
+ web/api/app/.htaccess         | 2 +-
+ web/api/app/webroot/.htaccess | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/web/api/.htaccess b/web/api/.htaccess
+index 7139a27..138ff44 100644
+--- a/web/api/.htaccess
++++ b/web/api/.htaccess
+@@ -2,5 +2,5 @@
+    RewriteEngine on
+    RewriteRule ^$ app/webroot/ [L]
+    RewriteRule (.*) app/webroot/$1 [L]
+-   RewriteBase /zm/api
++   RewriteBase /apps/nastools-zoneminder/api
+ </IfModule>
+diff --git a/web/api/app/.htaccess b/web/api/app/.htaccess
+index 1af74d9..3082a6f 100644
+--- a/web/api/app/.htaccess
++++ b/web/api/app/.htaccess
+@@ -2,5 +2,5 @@
+     RewriteEngine on
+     RewriteRule    ^$    webroot/    [L]
+     RewriteRule    (.*) webroot/$1    [L]
+-    RewriteBase /zm/api
++    RewriteBase /apps/nastools-zoneminder/api
+ </IfModule>
+diff --git a/web/api/app/webroot/.htaccess b/web/api/app/webroot/.htaccess
+index f08afa8..8c66c13 100644
+--- a/web/api/app/webroot/.htaccess
++++ b/web/api/app/webroot/.htaccess
+@@ -3,5 +3,5 @@
+     RewriteCond %{REQUEST_FILENAME} !-d
+     RewriteCond %{REQUEST_FILENAME} !-f
+     RewriteRule ^ index.php [L]
+-    RewriteBase /zm/api
++    RewriteBase /apps/nastools-zoneminder/api
+ </IfModule>

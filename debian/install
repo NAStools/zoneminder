@@ -1,0 +1,13 @@
+debian/readynas/config.xml apps/nastools-zoneminder
+debian/readynas/https.conf apps/nastools-zoneminder
+debian/readynas/logo.png apps/nastools-zoneminder
+debian/readynas/fvapp-nastools-zoneminder.service apps/nastools-zoneminder
+debian/readynas/nastools-zoneminder-db.service lib/systemd/system
+debian/readynas/my.cnf apps/nastools-zoneminder/etc
+apps/nastools-zoneminder/bin
+debian/readynas/mysql-wait-ready apps/nastools-zoneminder/bin
+apps/nastools-zoneminder/cgi-bin
+usr/share/perl5 apps/nastools-zoneminder/share
+apps/nastools-zoneminder/share/zoneminder/db
+apps/nastools-zoneminder/www
+apps/nastools-zoneminder/etc

@@ -1,0 +1,10 @@
+## Overrides from NAStools
+# Overrides for ReadyNAS packaging
+nastools-zoneminder: non-standard-toplevel-dir
+nastools-zoneminder: file-in-unusual-dir
+
+# Nothing we can do about these, since they're upstream
+nastools-zoneminder: possible-gpl-code-linked-with-openssl
+nastools-zoneminder: unusual-interpreter apps/nastools-zoneminder/bin/zmsystemctl.pl #!/usr/bin/pkexec
+nastools-zoneminder: package-contains-empty-directory
+nastools-zoneminder: script-not-executable
