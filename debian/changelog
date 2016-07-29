@@ -1,3 +1,9 @@
+zoneminder (1.30.0-nt1) unstable; urgency=medium
+
+  * Imported Upstream version 1.30.0
+
+ -- NAStools <dev@nas.tools>  Thu, 28 Jul 2016 21:12:03 -0700
+
 zoneminder (1.30.0~RC2-nt1) unstable; urgency=medium
 
   * Initial release.
