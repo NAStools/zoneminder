@@ -1,6 +1,6 @@
 <Application resource-id="nastools-zoneminder">
   <Version>1.30.0-nt1</Version>
-  <MinFirmwareVer>6.5.0</MinFirmwareVer>
+  <MinFirmwareVer>6.6.0</MinFirmwareVer>
   <Name>ZoneMinder NT</Name>
   <Author>NAStools</Author>
   <RequireReboot>0</RequireReboot>
