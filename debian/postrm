@@ -6,7 +6,7 @@ test $DEBIAN_SCRIPT_DEBUG && set -v -x
 
 case "$1" in
   remove)
-	if $(getent group nastools-zoneminder >/dev/null 2>&1); then
+	if getent group nastools-zoneminder >/dev/null 2>&1; then
 		GROUP_ID=$(getent group nastools-zoneminder | cut -d: -f3)
 		rn_nml -d group:$GROUP_ID
 	fi
